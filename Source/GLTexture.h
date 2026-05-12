@@ -18,7 +18,16 @@ public:
             glGenTextures(1, &this->tex);
         }
 
-        return !!this->tex;
+        if (!this->tex)
+        {
+            return false;
+        }
+
+        glBindTexture(this->target, this->tex);
+        glTexParameteri(this->target, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+        auto err = glGetError();
+        return GL_NO_ERROR == err;
     }
     void Release()
     {

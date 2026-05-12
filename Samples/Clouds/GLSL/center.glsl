@@ -14,7 +14,7 @@ layout(std430, binding = 1) buffer Summary
     uint sum[3];
 };
 
-layout(binding = 2) uniform atomic_uint nancnt;
+layout(binding = 0) uniform atomic_uint nancnt;
 
 shared vec3 local[LOCAL_SIZE];
 
