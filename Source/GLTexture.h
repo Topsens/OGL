@@ -77,7 +77,7 @@ public:
         return GL_NO_ERROR == err;
     }
 
-    bool Data(GLenum format, const uint32_t* pixels, uint32_t width, uint32_t height = 0)
+    bool Data(GLenum format, const void* pixels, uint32_t width, uint32_t height = 0)
     {
         if (!pixels || !width || (GL_TEXTURE_2D == this->target && !height))
         {
@@ -92,6 +92,12 @@ public:
         GLint internalFormat;
         switch (format)
         {
+            case GL_RGB:
+            {
+                internalFormat = GL_RGB8;
+                break;
+            }
+
             case GL_RGBA:
             case GL_BGRA:
             {
