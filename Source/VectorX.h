@@ -1964,6 +1964,20 @@ public:
         };
     }
 
+    static Matrix<4, 4, Scalar> GLPerspect(Scalar fx, Scalar fy, Scalar cx, Scalar cy, Scalar width, Scalar height, Scalar _near, Scalar _far)
+    {
+        Scalar iw = 1 / width;
+        Scalar ih = 1 / height;
+        Scalar iz = 1 / (_near - _far);
+        return Matrix<4, 4, Scalar>
+        {
+            { 2 * fx * iw, 0,            (width  - 2 * cx) * iw, 0                     },
+            { 0,           2 * fy * ih,  (2 * cy - height) * ih, 0                     },
+            { 0,           0,            (_near + _far) * iz,    2 * _near * _far * iz },
+            { 0,           0,            -1,                     0                     }
+        };
+    }
+
     static Matrix<4, 4, Scalar> GLPerspect(Scalar vfovInRad, Scalar aspect, Scalar _near, Scalar _far)
     {
         Scalar f = 1 / tan(vfovInRad / 2);
