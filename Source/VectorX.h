@@ -1602,22 +1602,25 @@ inline Matrix<MR0 + MR1, MCols, Scalar> operator&(const Matrix<MR0, MCols, Scala
 }
 
 template<size_t MRows, size_t MCols, typename Scalar>
-inline bool operator==(const Matrix<MRows, MCols, Scalar>& m0, const Matrix<MRows, MCols, Scalar>& m1)
+inline Matrix<MRows, MCols, bool> operator==(const Matrix<MRows, MCols, Scalar>& m0, const Matrix<MRows, MCols, Scalar>& m1)
 {
+    Matrix<MRows, MRows, bool> result;
     for (size_t i = 0; i < MRows; i++)
     {
-        if (m0.v[i] != m1.v[i])
-        {
-            return false;
-        }
+        result[i] = (m0.v[i] == m1.v[i]);
     }
-    return true;
+    return result;
 }
 
 template<size_t MRows, size_t MCols, typename Scalar>
-inline bool operator!=(const Matrix<MRows, MCols, Scalar>& m0, const Matrix<MRows, MCols, Scalar>& m1)
+inline Matrix<MRows, MCols, bool> operator!=(const Matrix<MRows, MCols, Scalar>& m0, const Matrix<MRows, MCols, Scalar>& m1)
 {
-    return !(m0 == m1);
+    Matrix<MRows, MRows, bool> result;
+    for (size_t i = 0; i < MRows; i++)
+    {
+        result[i] = (m0.v[i] != m1.v[i]);
+    }
+    return result;
 }
 
 template<size_t MRows, size_t MCols>

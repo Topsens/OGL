@@ -88,6 +88,23 @@ namespace details
         auto indent = os.iword(indent_index());
         return indent >= 1 ? indent - 1 : 4;
     }
+
+    inline char read(std::istream& is)
+    {
+        char c;
+        while ([&]{ is >> c; return c == ' ' || c == '\n' || c == '\r' || c == '\t'; }());
+        return is ? c : 0;
+    }
+
+    inline char peek(std::istream& is)
+    {
+        char c;
+        while ([&]{ c = (char)is.peek(); return c == ' ' || c == '\n' || c == '\r' || c == '\t'; }())
+        {
+            is.get();
+        }
+        return is ? c : 0;
+    }
 }
 
 inline details::Bracket bracket(char bracket)
@@ -116,8 +133,8 @@ inline std::ostream& operator<<(std::ostream& os, const details::Indent& indent)
     return os;
 }
 
-template<size_t Dims, typename Scalar>
-inline std::ostream& operator<<(std::ostream& os, const Vector<Dims, Scalar>& v)
+template<size_t Dimensions, typename Scalar>
+inline std::ostream& operator<<(std::ostream& os, const Vector<Dimensions, Scalar>& v)
 {
     char opening;
     char closing;
@@ -125,11 +142,11 @@ inline std::ostream& operator<<(std::ostream& os, const Vector<Dims, Scalar>& v)
 
     os << opening;
 
-    if (Dims > 0)
+    if (Dimensions > 0)
     {
         os << v.s[0];
 
-        for (size_t i = 1; i < Dims; i++)
+        for (size_t i = 1; i < Dimensions; i++)
         {
             os << ", " << v.s[i];
         }
@@ -183,6 +200,130 @@ inline std::ostream& operator<<(std::ostream& os, const Matrix<MRows, MCols, Sca
     }
 
     return os << closing;
+}
+
+template<size_t Dimensions, typename Scalar>
+inline std::istream& operator>>(std::istream& is, Vector<Dimensions, Scalar>& v)
+{
+    char closing = 0;
+
+    switch (details::read(is))
+    {
+        case '{':
+        {
+            closing = '}';
+            break;
+        }
+
+        case '[':
+        {
+            closing = ']';
+            break;
+        }
+
+        case '(':
+        {
+            closing = ')';
+            break;
+        }
+
+        case '<':
+        {
+            closing = '<';
+            break;
+        }
+
+        default:
+        {
+            is.setstate(ios::failbit);
+            return is;
+        }
+    }
+
+    if (Dimensions > 0)
+    {
+        is >> v.s[0];
+
+        for (size_t i = 1; i < Dimensions; i++)
+        {
+            char c = details::read(is);
+            if (',' != c)
+            {
+                is.setstate(ios::failbit);
+                return is;
+            }
+            is >> v.s[i];
+        }
+    }
+
+    if (closing != details::read(is))
+    {
+        is.setstate(ios::failbit);
+    }
+
+    return is;
+}
+
+template<size_t MRows, size_t MCols, typename Scalar>
+inline std::istream& operator>>(std::istream& is, Matrix<MRows, MCols, Scalar>& m)
+{
+    char closing = 0;
+
+    switch (details::read(is))
+    {
+        case '{':
+        {
+            closing = '}';
+            break;
+        }
+
+        case '[':
+        {
+            closing = ']';
+            break;
+        }
+
+        case '(':
+        {
+            closing = ')';
+            break;
+        }
+
+        case '<':
+        {
+            closing = '<';
+            break;
+        }
+
+        default:
+        {
+            is.setstate(ios::failbit);
+            return is;
+        }
+    }
+
+    if (MRows > 0)
+    {
+        is >> m.v[0];
+
+        for (size_t i = 1; i < MRows; i++)
+        {
+            char c = details::read(is);
+            if (',' != c)
+            {
+                is.setstate(ios::failbit);
+                return is;
+            }
+            is >> m.v[i];
+        }
+    }
+
+    if (closing != details::read(is))
+    {
+        is.setstate(ios::failbit);
+    }
+
+    return is;
 }
 
 #ifdef VECTORX_NS
