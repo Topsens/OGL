@@ -34,6 +34,12 @@ namespace details
         return index;
     }
 
+    inline int compact_index()
+    {
+        static const int index = std::ios_base::xalloc();
+        return index;
+    }
+
     inline int indent_index()
     {
         static const int index = std::ios_base::xalloc();
@@ -44,6 +50,30 @@ namespace details
     {
         static const int index = std::ios_base::xalloc();
         return index;
+    }
+
+    inline std::ostream& set_singleline(std::ostream& os)
+    {
+        os.iword(singleline_index()) = 1;
+        return os;
+    }
+
+    inline std::ostream& set_multiline(std::ostream& os)
+    {
+        os.iword(singleline_index()) = 0;
+        return os;
+    }
+
+    inline std::ostream& set_space(std::ostream& os)
+    {
+        os.iword(compact_index()) = 0;
+        return os;
+    }
+
+    inline std::ostream& set_nospace(std::ostream& os)
+    {
+        os.iword(compact_index()) = 1;
+        return os;
     }
 
     inline void get_bracket(std::ostream& os, char& opening, char& closing)
@@ -107,6 +137,11 @@ namespace details
     }
 }
 
+std::ostream&(*const singleline)(std::ostream&)  = details::set_singleline;
+std::ostream&(*const multiline)(std::ostream&) = details::set_multiline;
+std::ostream&(*const space)(std::ostream&) = details::set_space;
+std::ostream&(*const nospace)(std::ostream&) = details::set_nospace;
+
 inline details::Bracket bracket(char bracket)
 {
     details::Bracket b;
@@ -136,6 +171,8 @@ inline std::ostream& operator<<(std::ostream& os, const details::Indent& indent)
 template<size_t Dimensions, typename Scalar>
 inline std::ostream& operator<<(std::ostream& os, const Vector<Dimensions, Scalar>& v)
 {
+    auto compact = os.iword(details::compact_index());
+
     char opening;
     char closing;
     details::get_bracket(os, opening, closing);
@@ -148,7 +185,7 @@ inline std::ostream& operator<<(std::ostream& os, const Vector<Dimensions, Scala
 
         for (size_t i = 1; i < Dimensions; i++)
         {
-            os << ", " << v.s[i];
+            os << ',' << (compact ? "" : " ") << v.s[i];
         }
     }
 
@@ -162,6 +199,7 @@ inline std::ostream& operator<<(std::ostream& os, const Matrix<MRows, MCols, Sca
     char closing;
     details::get_bracket(os, opening, closing);
 
+    int compact = os.iword(details::compact_index());
     int singleline = os.iword(details::singleline_index());
 
     os << opening;
@@ -182,6 +220,11 @@ inline std::ostream& operator<<(std::ostream& os, const Matrix<MRows, MCols, Sca
         for (size_t i = 1; i < MRows; i++)
         {
             os << ',';
+            if (singleline && !compact)
+            {
+                os << ' ';
+            }
+
             if (!singleline)
             {
                 os << std::endl;

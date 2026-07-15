@@ -39,6 +39,27 @@ int main()
     os.str({});
     os.clear();
 
+    os << singleline << nospace << m;
+    if ("[[1,2],[3,4]]" != os.str())
+    {
+        cout << os.str() << endl;
+        return -1;
+    }
+
+    os.str({});
+    os.clear();
+
+    os << space << m;
+    if ("[[1, 2], [3, 4]]" != os.str())
+    {
+        cout << os.str() << endl;
+        return -1;
+    }
+
+    os.str({});
+    os.clear();
+    os << multiline;
+
     os << indent(2) << bracket('{') << m;
     if ("{\n  {1, 2},\n  {3, 4}\n}" != os.str())
     {
