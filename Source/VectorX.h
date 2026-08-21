@@ -2024,15 +2024,38 @@ public:
         translation = { matrix[0u][3u], matrix[1u][3u], matrix[2u][3u] };
     }
 
-    static void GetRotation(const Matrix<4, 4, Scalar>& matrix, Vector<3, Scalar>& axis, Scalar& radian)
+    static Scalar GetRotation(const Matrix<4, 4, Scalar>& matrix)
     {
         auto trace = matrix[0u][0u] + matrix[1u][1u] + matrix[2u][2u];
-        radian = std::acos((trace - 1) / 2);
+        trace = std::clamp(trace, (Scalar)-1, (Scalar)3);
+
+        auto radian = std::acos((trace - 1) / 2);
+        if (radian < std::numeric_limits<Scalar>::epsilon())
+        {
+            radian = (Scalar)0;
+        }
+        return radian;
+    }
+
+    static Scalar GetRotation(const Matrix<4, 4, Scalar>& matrix, Vector<3, Scalar>& axis)
+    {
+        auto trace = matrix[0u][0u] + matrix[1u][1u] + matrix[2u][2u];
+        trace = std::clamp(trace, (Scalar)-1, (Scalar)3);
+
+        auto radian = std::acos((trace - 1) / 2);
+        if (radian < std::numeric_limits<Scalar>::epsilon())
+        {
+            radian = (Scalar)0;
+            axis = Vector<3, Scalar>::XAxis;
+            return radian;
+        }
 
         auto factor = 1 / (2 * (Scalar)std::sqrt(1 + trace));
         axis = { factor * (matrix[2u][1u] - matrix[1u][2u]),
                  factor * (matrix[0u][2u] - matrix[2u][0u]),
                  factor * (matrix[1u][0u] - matrix[0u][1u]) };
+
+        return radian;
     }
 };
 
