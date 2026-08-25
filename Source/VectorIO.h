@@ -137,45 +137,45 @@ namespace details
     }
 }
 
-std::ostream&(*const singleline)(std::ostream&)  = details::set_singleline;
-std::ostream&(*const multiline)(std::ostream&) = details::set_multiline;
-std::ostream&(*const space)(std::ostream&) = details::set_space;
-std::ostream&(*const nospace)(std::ostream&) = details::set_nospace;
+std::ostream&(*const singleline)(std::ostream&)  = VXNS::details::set_singleline;
+std::ostream&(*const multiline)(std::ostream&) = VXNS::details::set_multiline;
+std::ostream&(*const space)(std::ostream&) = VXNS::details::set_space;
+std::ostream&(*const nospace)(std::ostream&) = VXNS::details::set_nospace;
 
-inline details::Bracket bracket(char bracket)
+inline VXNS::details::Bracket bracket(char bracket)
 {
-    details::Bracket b;
+    VXNS::details::Bracket b;
     b.bracket = bracket;
     return b;
 }
 
-inline details::Indent indent(int indent)
+inline VXNS::details::Indent indent(int indent)
 {
-    details::Indent i;
+    VXNS::details::Indent i;
     i.indent = indent < 1 ? 1 : indent + 1;
     return i;
 }
 
-inline std::ostream& operator<<(std::ostream& os, const details::Bracket& bracket)
+inline std::ostream& operator<<(std::ostream& os, const VXNS::details::Bracket& bracket)
 {
-    os.iword(details::bracket_index()) = bracket.bracket;
+    os.iword(VXNS::details::bracket_index()) = bracket.bracket;
     return os;
 }
 
-inline std::ostream& operator<<(std::ostream& os, const details::Indent& indent)
+inline std::ostream& operator<<(std::ostream& os, const VXNS::details::Indent& indent)
 {
-    os.iword(details::indent_index()) = indent.indent;
+    os.iword(VXNS::details::indent_index()) = indent.indent;
     return os;
 }
 
 template<size_t Dimensions, typename Scalar>
 inline std::ostream& operator<<(std::ostream& os, const Vector<Dimensions, Scalar>& v)
 {
-    auto compact = os.iword(details::compact_index());
+    auto compact = os.iword(VXNS::details::compact_index());
 
     char opening;
     char closing;
-    details::get_bracket(os, opening, closing);
+    VXNS::details::get_bracket(os, opening, closing);
 
     os << opening;
 
@@ -197,17 +197,17 @@ inline std::ostream& operator<<(std::ostream& os, const Matrix<MRows, MCols, Sca
 {
     char opening;
     char closing;
-    details::get_bracket(os, opening, closing);
+    VXNS::details::get_bracket(os, opening, closing);
 
-    int compact = os.iword(details::compact_index());
-    int singleline = os.iword(details::singleline_index());
+    int compact = os.iword(VXNS::details::compact_index());
+    int singleline = os.iword(VXNS::details::singleline_index());
 
     os << opening;
 
     if (!singleline)
     {
         os << std::endl;
-        for (int i = 0; i < details::get_indent(os); i++)
+        for (int i = 0; i < VXNS::details::get_indent(os); i++)
         {
             os << ' ';
         }
@@ -228,7 +228,7 @@ inline std::ostream& operator<<(std::ostream& os, const Matrix<MRows, MCols, Sca
             if (!singleline)
             {
                 os << std::endl;
-                for (int i = 0; i < details::get_indent(os); i++)
+                for (int i = 0; i < VXNS::details::get_indent(os); i++)
                 {
                     os << ' ';
                 }
@@ -250,7 +250,7 @@ inline std::istream& operator>>(std::istream& is, Vector<Dimensions, Scalar>& v)
 {
     char closing = 0;
 
-    switch (details::read(is))
+    switch (VXNS::details::read(is))
     {
         case '{':
         {
@@ -289,7 +289,7 @@ inline std::istream& operator>>(std::istream& is, Vector<Dimensions, Scalar>& v)
 
         for (size_t i = 1; i < Dimensions; i++)
         {
-            char c = details::read(is);
+            char c = VXNS::details::read(is);
             if (',' != c)
             {
                 is.setstate(ios::failbit);
@@ -299,7 +299,7 @@ inline std::istream& operator>>(std::istream& is, Vector<Dimensions, Scalar>& v)
         }
     }
 
-    if (closing != details::read(is))
+    if (closing != VXNS::details::read(is))
     {
         is.setstate(ios::failbit);
     }
@@ -312,7 +312,7 @@ inline std::istream& operator>>(std::istream& is, Matrix<MRows, MCols, Scalar>& 
 {
     char closing = 0;
 
-    switch (details::read(is))
+    switch (VXNS::details::read(is))
     {
         case '{':
         {
@@ -351,7 +351,7 @@ inline std::istream& operator>>(std::istream& is, Matrix<MRows, MCols, Scalar>& 
 
         for (size_t i = 1; i < MRows; i++)
         {
-            char c = details::read(is);
+            char c = VXNS::details::read(is);
             if (',' != c)
             {
                 is.setstate(ios::failbit);
@@ -361,7 +361,7 @@ inline std::istream& operator>>(std::istream& is, Matrix<MRows, MCols, Scalar>& 
         }
     }
 
-    if (closing != details::read(is))
+    if (closing != VXNS::details::read(is))
     {
         is.setstate(ios::failbit);
     }
