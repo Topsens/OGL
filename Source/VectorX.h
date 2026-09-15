@@ -2027,7 +2027,7 @@ public:
     static Scalar GetRotation(const Matrix<4, 4, Scalar>& matrix)
     {
         auto trace = matrix[0u][0u] + matrix[1u][1u] + matrix[2u][2u];
-        trace = std::clamp(trace, (Scalar)-1, (Scalar)3);
+        trace = std::min(std::max(trace, (Scalar)-1), (Scalar)3);
 
         auto radian = std::acos((trace - 1) / 2);
         if (radian < std::numeric_limits<Scalar>::epsilon())
@@ -2040,7 +2040,7 @@ public:
     static Scalar GetRotation(const Matrix<4, 4, Scalar>& matrix, Vector<3, Scalar>& axis)
     {
         auto trace = matrix[0u][0u] + matrix[1u][1u] + matrix[2u][2u];
-        trace = std::clamp(trace, (Scalar)-1, (Scalar)3);
+        trace = std::min(std::max(trace, (Scalar)-1), (Scalar)3);
 
         auto radian = std::acos((trace - 1) / 2);
         if (radian < std::numeric_limits<Scalar>::epsilon())
@@ -2062,5 +2062,5 @@ public:
 #ifdef VECTORX_NS
 }
 #endif
-#undef VXNS
+
 #endif // _VECTOR_X_H_
