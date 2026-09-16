@@ -5,9 +5,6 @@ if(MSVC AND MSVC_VERSION GREATER_EQUAL 1911)
     add_compile_options(/permissive-)
 endif()
 
-enable_testing()
-add_subdirectory(Test)
-
 if(WIN32)
     # Config "cmake.configureSettings": { "GLEW_SHARED": "ON" } in settings.json to enable dynamic link to glew32.dll
     set(GLEW_SHARED OFF CACHE BOOL "Link glew shared library")
@@ -22,10 +19,11 @@ if(WIN32)
 
     set(CMAKE_CXX_STANDARD 11)
     set(OGL_INC ${CMAKE_CURRENT_LIST_DIR}/Source)
-    set(W32_INC ${CMAKE_CURRENT_LIST_DIR}/W32/Source)
+    set(VX_INC  ${CMAKE_CURRENT_LIST_DIR}/Modules/VX/Source)
+    set(W32_INC ${CMAKE_CURRENT_LIST_DIR}/Modules/W32/Source)
     set(GLEW_DIR ${CMAKE_CURRENT_LIST_DIR}/3rdParty/glew-2.1.0)
 
-    include_directories(${OGL_INC} ${W32_INC} ${GLEW_DIR}/include)
+    include_directories(${OGL_INC} ${VX_INC} ${W32_INC} ${GLEW_DIR}/include)
     link_directories(${GLEW_DIR}/lib/${CMAKE_VS_PLATFORM_NAME})
 
     add_compile_definitions(WIN32 _WINDOWS _UNICODE UNICODE)

@@ -1,3 +1,8 @@
-[submodule "W32"]
-	path = W32
+[submodule "Modules/VX"]
+	branch = master
+	path = Modules/VX
+	url = https://github.com/sun-xm/VX.git
+[submodule "Modules/W32"]
+	branch = master
+	path = Modules/W32
 	url = https://github.com/sun-xm/W32.git

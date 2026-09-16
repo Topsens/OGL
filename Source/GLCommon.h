@@ -1,6 +1,6 @@
 #pragma once
 
-#include "VectorX.h"
+#include <VectorX.h>
 #include <cstdint>
 
 typedef VXNS::Vector<3, uint32_t> Element;
